@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Checkers.MVVM.ViewModels;
+using Checkers.Stores;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +15,15 @@ namespace Checkers
     /// </summary>
     public partial class App : Application
     {
+        private readonly Navigation _navigation = new Navigation();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            MainWindow = new MainWindow()
+            {
+                DataContext = new MainViewModel()
+            };
+            MainWindow.Show();
+            base.OnStartup(e);
+        }
     }
 }

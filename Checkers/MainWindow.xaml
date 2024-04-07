@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Checkers"
+        xmlns:vm="clr-namespace:Checkers.MVVM.ViewModels"
+        xmlns:view="clr-namespace:Checkers.MVVM.Views" d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Checkers" 
+        SizeToContent="Height"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="400"
+        MinHeight="400"
+        Background="#302e2a">
     <Grid>
-        
+        <view:BoardView DataContext="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>
