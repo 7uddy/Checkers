@@ -19,17 +19,32 @@
             <ImageBrush ImageSource="../../Resources/Board.png"/>
         </Grid.Background>
 
-            <ItemsControl ItemsSource="{Binding Squares}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="8" Columns="8" Margin="28 10 5 28"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+            <ItemsControl ItemsSource="{Binding Squares}" Margin="25 7 0 0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Image Source="{Binding}"/>
+                        <ItemsControl ItemsSource="{Binding}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="96" Height="95" BorderThickness="2" BorderBrush="#000000" >
+                                        <Button Command="{Binding ClickCommand}" CommandParameter="{Binding SimpleCell}">
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
+                
             </ItemsControl>
 
 

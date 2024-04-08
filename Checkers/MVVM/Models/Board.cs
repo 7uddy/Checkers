@@ -1,4 +1,6 @@
-﻿using Checkers.MVVM.Services;
+﻿using Caliburn.Micro;
+using Checkers.MVVM.Models;
+using Checkers.MVVM.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +78,52 @@ namespace Checkers.Models
         public bool IsEmpty(Position position)
         {
             return this[position] == null;
+        }
+
+        public static BindableCollection<BindableCollection<Cell>> GetInitialCells()
+        {
+            BindableCollection<BindableCollection<Cell>> cells = new BindableCollection<BindableCollection<Cell>>();
+
+            //White pieces
+            for (int row = 0; row < 3; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    if ((row + col) % 2 == 1) 
+                        rowCells.Add(new Cell { Row = row, Column = col, ImagePath = "../../Resources/whitePiece.png"});
+                    else 
+                        rowCells.Add(new Cell { Row = row, Column = col, ImagePath = "../../Resources/transparent.png" });
+                }
+               cells.Add(rowCells);
+            }
+
+            //Empty cells
+            for (int row = 3; row < 5; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    rowCells.Add(new Cell { Row = row, Column = col, ImagePath = "../../Resources/transparent.png" });
+                }
+                cells.Add(rowCells);
+            }
+
+            //Red pieces
+            for (int row = 5; row < 8; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    if ((row + col) % 2 == 1)
+                        rowCells.Add(new Cell { Row = row, Column = col, ImagePath = "../../Resources/redPiece.png" });
+                    else
+                        rowCells.Add(new Cell { Row = row, Column = col, ImagePath = "../../Resources/transparent.png" });
+                }
+                cells.Add(rowCells);
+            }
+
+            return cells;
         }
     }
 }
