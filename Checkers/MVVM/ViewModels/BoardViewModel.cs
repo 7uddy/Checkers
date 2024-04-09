@@ -3,6 +3,7 @@ using Checkers.Models;
 using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,15 +18,6 @@ namespace Checkers.MVVM.ViewModels
 {
     public class BoardViewModel:ViewModelBase
     {
-        //GameLogic _gameLogic;
-        //public BindableCollection<BindableCollection<SquareViewModel>> Squares { get; set; }
-        
-        //public GameTableViewModel(GameLogic gameLogic)
-        //{
-        //    this._gameLogic = gameLogic;
-            
-        //}
-
         public Player CurrentPlayer { get; private set; }
 
         private BindableCollection<BindableCollection<Cell>> _squares;
@@ -42,21 +34,22 @@ namespace Checkers.MVVM.ViewModels
         }
         public Cell SimpleCell { get; set; }
 
-        private ICommand clickCommand;
+        private ICommand _clickCommand;
         public ICommand ClickCommand
         {
             get
             {
-                if (clickCommand == null)
+                if (_clickCommand == null)
                 {
-                    clickCommand = new RelayCommand<Cell>(Hello);
+                    _clickCommand = new DelegateCommand<Cell>(OnCellClicked);
                 }
-                return clickCommand;
+                return _clickCommand;
             }
         }
-        public void Hello(Cell obj)
+
+        public void OnCellClicked(Cell cell)
         {
-               Console.WriteLine("Hello");
+            Console.WriteLine("Cell clicked");
         }
     }
 }

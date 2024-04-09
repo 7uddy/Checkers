@@ -16,7 +16,9 @@
             </Grid.RowDefinitions>
 
         <Grid.Background>
-            <ImageBrush ImageSource="../../Resources/Board.png"/>
+            <ImageBrush ImageSource="../../Resources/Board.png"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        />
         </Grid.Background>
 
             <ItemsControl ItemsSource="{Binding Squares}" Margin="25 7 0 0">
@@ -30,11 +32,11 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Width="96" Height="95" BorderThickness="2" BorderBrush="#000000" >
-                                        <Button Command="{Binding ClickCommand}" CommandParameter="{Binding SimpleCell}">
+                                    <Border Width="96" Height="95" BorderThickness="2">
+                                        <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ClickCommand}" CommandParameter="{Binding}" IsEnabled="True">
                                             <Button.Template>
                                                 <ControlTemplate>
-                                                    <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                                    <Image Source="{Binding ImagePath}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
