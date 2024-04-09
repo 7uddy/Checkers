@@ -12,6 +12,11 @@ namespace Checkers.MVVM.Services
             Row = row;
             Column = column;
         }
+
+        public Position()
+        {
+        }
+
         public Player SquareColor()
         {
             if((Row + Column) % 2 == 0)

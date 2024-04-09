@@ -22,5 +22,10 @@
         {
             return new Direction(scalar * direction.RowDelta, scalar * direction.ColumnDelta);
         }
+
+        public Position NewPosition(Position position)
+        {
+            return new Position(position.Row + RowDelta, position.Column + ColumnDelta);
+        }
     }
 }

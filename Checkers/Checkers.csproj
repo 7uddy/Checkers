@@ -206,6 +206,9 @@
     </ApplicationDefinition>
     <Compile Include="MVVM\Logic\Direction.cs" />
     <Compile Include="MVVM\Logic\GameLogic.cs" />
+    <Compile Include="MVVM\Logic\Moves\Move.cs" />
+    <Compile Include="MVVM\Logic\Moves\NormalMove.cs" />
+    <Compile Include="MVVM\Logic\MoveType.cs" />
     <Compile Include="MVVM\Logic\Player.cs" />
     <Compile Include="MVVM\Logic\Position.cs" />
     <Compile Include="MVVM\Models\Cell.cs" />
@@ -295,6 +298,11 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
