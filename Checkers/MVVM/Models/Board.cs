@@ -116,16 +116,15 @@ namespace Checkers.Models
             BindableCollection<BindableCollection<Cell>> cells = new BindableCollection<BindableCollection<Cell>>();
 
             //White pieces
-            Piece piece=new Piece(Player.White,false);
             for (int row = 0; row < 3; row++)
             {
                 BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
                 for (int col = 0; col < 8; col++)
                 {
                     if ((row + col) % 2 == 1) 
-                        rowCells.Add(new Cell { CellPosition=new Position(row,col), Piece=piece, ImagePath = "../../Resources/whitePiece.png"});
+                        rowCells.Add(new Cell { CellPosition=new Position(row,col), Piece= new Piece(Player.White, false), ImagePath = "../../Resources/whitePiece.png"});
                     else 
-                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = piece,ImagePath = "../../Resources/transparent.png" });
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece=null,ImagePath = "../../Resources/transparent.png" });
                 }
                cells.Add(rowCells);
             }
@@ -142,16 +141,15 @@ namespace Checkers.Models
             }
 
             //Red pieces
-            piece = new Piece(Player.Red, false);
             for (int row = 5; row < 8; row++)
             {
                 BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
                 for (int col = 0; col < 8; col++)
                 {
                     if ((row + col) % 2 == 1)
-                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = piece, ImagePath = "../../Resources/redPiece.png" });
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = new Piece(Player.Red, false), ImagePath = "../../Resources/redPiece.png" });
                     else
-                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = piece, ImagePath = "../../Resources/transparent.png" });
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
                 }
                 cells.Add(rowCells);
             }

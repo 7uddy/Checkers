@@ -32,31 +32,27 @@ namespace Checkers.Models
             return piece;
         }
 
-        public Position GetMoves(Position from, BindableCollection<BindableCollection<Cell>> cells,Direction dir)
+        public Position GetMoves(Position from, BindableCollection<BindableCollection<Cell>> cells, Direction dir)
         {
 
-            if(!_isKing)
+            Position pos = dir.NewPosition(from);
+
+            if (Board.IsEmpty(pos, cells))
             {
-                Position pos=new Position();
-
-                pos = dir.NewPosition(from);
-
-                if (Board.IsEmpty(pos, cells))
+                return pos;
+            }
+            else
+            {
+                if (Board.IsInsideBoard(pos) && Board.GetPiece(pos, cells).Color != _color)
                 {
-                    return pos;
-                }
-                else
-                {
-                    if (Board.IsInsideBoard(pos) && Board.GetPiece(pos, cells).Color != _color)
+                    pos = dir.NewPosition(pos);
+                    if (Board.IsEmpty(pos, cells))
                     {
-                        pos = dir.NewPosition(pos);
-                        if (Board.IsEmpty(pos, cells))
-                        {
-                            return pos;
-                        }
+                        return pos;
                     }
                 }
             }
+
             return null;
         }
     }

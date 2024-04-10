@@ -62,18 +62,21 @@ namespace Checkers.MVVM.ViewModels
             if(clickedCell.ImagePath== "../../Resources/Green.png")
             {
                 MoveToNewCell(clickedCell);
+
                 if(IsCaptureMove(SimpleCell,clickedCell))
                 {
                     Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
                     capturedCell.Piece = null;
                     capturedCell.ImagePath = "../../Resources/transparent.png";
                 }
+
+                IsPromotionMove(clickedCell);
                 DeleteGreen();
                 CurrentPlayer = CurrentPlayer == Player.Red ? Player.White : Player.Red;
             }
 
             //Piece selected
-            if (clickedCell.Piece != null && clickedCell.Piece.Color == CurrentPlayer)
+            else if (clickedCell.Piece != null && clickedCell.Piece.Color == CurrentPlayer)
             {
                 SimpleCell = clickedCell;
                 DeleteGreen();
@@ -108,32 +111,60 @@ namespace Checkers.MVVM.ViewModels
         }
         void SetAcceptedMoves(Cell clickedCell)
         {
-            List<Position> greenPositions = new List<Position>();
-            if (clickedCell.Piece.Color == Player.White)
+            if (clickedCell.Piece.IsKing == false)
             {
-                greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthWest));
-                greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthEast));
-            }
-            else
-            {
-                greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthWest));
-                greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthEast));
-            }
-            GreenCells = new List<Cell>();
-            foreach (var pos in greenPositions)
-            {
-                foreach (var row in _squares)
+                List<Position> greenPositions = new List<Position>();
+                if (clickedCell.Piece.Color == Player.White)
                 {
-                    foreach (var cell in row)
+                    greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthWest));
+                    greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthEast));
+                }
+                else
+                {
+                    greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthWest));
+                    greenPositions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthEast));
+                }
+                GreenCells = new List<Cell>();
+                foreach (var pos in greenPositions)
+                {
+                    foreach (var row in _squares)
                     {
-                        if (cell.CellPosition == pos)
+                        foreach (var cell in row)
                         {
-                            cell.ImagePath = "../../Resources/Green.png";
-                            GreenCells.Add(cell);
+                            if (cell.CellPosition == pos)
+                            {
+                                cell.ImagePath = "../../Resources/Green.png";
+                                GreenCells.Add(cell);
+                            }
                         }
                     }
                 }
-            } 
+            }
+            else
+            {
+                List<Position> greenPositions = new List<Position>
+                {
+                    clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthWest),
+                    clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthEast),
+                    clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthWest),
+                    clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthEast)
+                };
+                GreenCells = new List<Cell>();
+                foreach (var pos in greenPositions)
+                {
+                    foreach (var row in _squares)
+                    {
+                        foreach (var cell in row)
+                        {
+                            if (cell.CellPosition == pos)
+                            {
+                                cell.ImagePath = "../../Resources/Green.png";
+                                GreenCells.Add(cell);
+                            }
+                        }
+                    }
+                }
+            }
         }
         private bool IsCaptureMove(Cell from,Cell to)
         {
@@ -145,6 +176,24 @@ namespace Checkers.MVVM.ViewModels
             int row = (from.CellPosition.Row + to.CellPosition.Row) / 2;
             int col = (from.CellPosition.Column + to.CellPosition.Column) / 2;
             return _squares[row][col];
+        }
+
+        private void IsPromotionMove(Cell cell)
+        {
+            if (cell.Piece.IsKing)
+            {
+                return;
+            }
+            if (cell.Piece.Color == Player.White && cell.CellPosition.Row == 7)
+            {
+                cell.Piece.IsKing = true;
+                cell.ImagePath = "../../Resources/whiteKing.png";
+            }
+            else if (cell.Piece.Color == Player.Red && cell.CellPosition.Row == 0)
+            {
+                cell.Piece.IsKing = true;
+                cell.ImagePath = "../../Resources/redKing.png";
+            }
         }
         
     }
