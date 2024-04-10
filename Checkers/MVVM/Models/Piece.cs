@@ -38,32 +38,23 @@ namespace Checkers.Models
             if(!_isKing)
             {
                 Position pos=new Position();
-                if(_color==Player.White)
+
+                pos = dir.NewPosition(from);
+
+                if (Board.IsEmpty(pos, cells))
                 {
-                    if(dir==Direction.SouthEast)
-                    {
-                        pos = Direction.SouthEast.NewPosition(from);
-                    }
-                    else if(dir==Direction.SouthWest)
-                    {
-                        pos = Direction.SouthWest.NewPosition(from);
-                    }
+                    return pos;
                 }
                 else
                 {
-                    if(dir==Direction.NorthWest)
+                    if (Board.IsInsideBoard(pos) && Board.GetPiece(pos, cells).Color != _color)
                     {
-                        pos = Direction.NorthWest.NewPosition(from);
+                        pos = dir.NewPosition(pos);
+                        if (Board.IsEmpty(pos, cells))
+                        {
+                            return pos;
+                        }
                     }
-                    else if(dir==Direction.NorthEast)
-                    {
-                        pos = Direction.NorthEast.NewPosition(from);
-                    }
-                }
-
-                if (Board.IsEmpty(pos, cells) && Board.GetPiece(pos, cells) == null)
-                {
-                    return pos;
                 }
             }
             return null;

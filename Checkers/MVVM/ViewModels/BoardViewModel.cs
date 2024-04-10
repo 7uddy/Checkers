@@ -50,7 +50,7 @@ namespace Checkers.MVVM.ViewModels
             {
                 if (_clickCommand == null)
                 {
-                    _clickCommand = new DelegateCommand<Cell>(OnCellClicked);
+                    _clickCommand = new RelayCommand<Cell>(OnCellClicked);
                 }
                 return _clickCommand;
             }
@@ -62,6 +62,12 @@ namespace Checkers.MVVM.ViewModels
             if(clickedCell.ImagePath== "../../Resources/Green.png")
             {
                 MoveToNewCell(clickedCell);
+                if(IsCaptureMove(SimpleCell,clickedCell))
+                {
+                    Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
+                    capturedCell.Piece = null;
+                    capturedCell.ImagePath = "../../Resources/transparent.png";
+                }
                 DeleteGreen();
                 CurrentPlayer = CurrentPlayer == Player.Red ? Player.White : Player.Red;
             }
@@ -128,6 +134,17 @@ namespace Checkers.MVVM.ViewModels
                     }
                 }
             } 
+        }
+        private bool IsCaptureMove(Cell from,Cell to)
+        {
+            return Math.Abs(from.CellPosition.Row - to.CellPosition.Row) == 2;
+        }
+
+        private Cell GetCapturedCell(Cell from, Cell to)
+        {
+            int row = (from.CellPosition.Row + to.CellPosition.Row) / 2;
+            int col = (from.CellPosition.Column + to.CellPosition.Column) / 2;
+            return _squares[row][col];
         }
         
     }
