@@ -1,6 +1,9 @@
 ﻿using Caliburn.Micro;
 using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
+using Checkers.MVVM.ViewModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -182,8 +185,8 @@ namespace Checkers.Models
 
         public static void SaveGame(BindableCollection<BindableCollection<Cell>> cells)
         {
+            BoardViewModel.DeleteGreen();
             string filePath = "../../JSONs/game.json";
-
 
             if (File.Exists(filePath))
             {
@@ -192,21 +195,83 @@ namespace Checkers.Models
 
             List<string> jsonList = new List<string>();
 
+            string gameOverJson;
+            // Serialize non-cell variables
+
+            if (BoardViewModel.GameOver == true)
+            {
+                gameOverJson = Newtonsoft.Json.JsonConvert.SerializeObject(1);
+            }
+            else gameOverJson = Newtonsoft.Json.JsonConvert.SerializeObject(0);
+
+            string currentPlayerJson = Newtonsoft.Json.JsonConvert.SerializeObject(BoardViewModel.CurrentPlayer);
+            jsonList.Add(gameOverJson);
+            jsonList.Add(currentPlayerJson);
+
+            // Serialize cell data
             foreach (var row in cells)
             {
                 foreach (var cell in row)
                 {
                     string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cell);
-                    jsonList.Add(jsonData); // Write the JSON data to the file
+                    jsonList.Add(jsonData);
                 }
             }
 
-            // Serialize the list of JSON strings as a JSON array
+            // Convert the list of JSON strings into a single JSON array string
             string jsonArray = "[" + string.Join(",", jsonList) + "]";
 
             // Write the JSON array to the file
-            File.WriteAllText("../../JSONs/game.json", jsonArray);
+            File.WriteAllText(filePath, jsonArray);
+        }
 
+
+        public static (int gameState,int currentPlayer, BindableCollection<BindableCollection<Cell>> cells) ReadFromJson(string filePath)
+        {
+            // Read the entire content of the file as a single string
+            string jsonData = File.ReadAllText(filePath);
+
+            // Deserialize the JSON string into a JArray
+            JArray jsonArray = JArray.Parse(jsonData);
+
+            // Extract the non-cell variables from the first two elements of the JSON array
+            int gameState = jsonArray[0].ToObject<int>();
+            int currentPlayer = jsonArray[1].ToObject<int>();
+
+            // Extract the cell data from the remaining elements of the JSON array
+            JArray cellArray = new JArray(jsonArray.Skip(2));
+            BindableCollection<BindableCollection<Cell>> cells = new BindableCollection<BindableCollection<Cell>>();
+
+            // Initialize the outer collection
+            for (int i = 0; i < 8; i++)
+            {
+                cells.Add(new BindableCollection<Cell>());
+            }
+
+            foreach (JToken cellToken in cellArray)
+            {
+                // Deserialize CellPosition
+                Position cellPosition = cellToken["CellPosition"].ToObject<Position>();
+
+                // Deserialize Piece
+                Piece piece = cellToken["Piece"]?.ToObject<Piece>();
+
+                // Read ImagePath
+                string imagePath = (string)cellToken["ImagePath"];
+
+                // Create Cell object
+                Cell cell = new Cell
+                {
+                    CellPosition = cellPosition,
+                    Piece = piece,
+                    ImagePath = imagePath
+                };
+
+                // Add the cell to the appropriate row
+                cells[cellPosition.Row].Add(cell);
+            }
+
+            return (gameState,currentPlayer, cells);
         }
     }
 }

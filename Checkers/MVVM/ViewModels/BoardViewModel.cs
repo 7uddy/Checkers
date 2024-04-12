@@ -18,7 +18,9 @@ namespace Checkers.MVVM.ViewModels
 {
     public class BoardViewModel:ViewModelBase
     {
-        public Player CurrentPlayer { get; private set; }
+        public static Player CurrentPlayer { get; private set; }
+
+        public static bool GameOver { get; private set; }
 
         private BindableCollection<BindableCollection<Cell>> _squares;
 
@@ -38,10 +40,11 @@ namespace Checkers.MVVM.ViewModels
         public BoardViewModel()
         {
             CurrentPlayer=Player.Red;
+            GameOver=false;
             _squares = Board.GetInitialCells();
         }
         public Cell SimpleCell { get; set; }
-        private List<Cell> GreenCells { get; set; }
+        static private List<Cell> GreenCells { get; set; }
 
         private ICommand _clickCommand;
         public ICommand ClickCommand
@@ -99,7 +102,7 @@ namespace Checkers.MVVM.ViewModels
 
         }
 
-        void DeleteGreen()
+        public static void DeleteGreen()
         {
             if (GreenCells!=null)
             {
@@ -208,6 +211,51 @@ namespace Checkers.MVVM.ViewModels
                 return _saveGame;
             }
         }
-        
+
+        private ICommand _loadGame;
+        public ICommand LoadGame
+        {
+            get
+            {
+                if (_loadGame == null)
+                {
+                    _loadGame = new RelayCommand(() =>
+                    {
+                        string filePath = "../../JSONs/game.json";
+
+                        // Read data from JSON file
+                        var (gameState,currentPlayer, cells) = Board.ReadFromJson(filePath);
+
+                        // Process the loaded data as needed
+                        // For example, update your ViewModel properties with the loaded data
+                        _squares = cells;
+                        Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+
+                        // Once the data is loaded, you can update your ViewModel properties
+                        // or trigger other actions as needed
+                        if (gameState==1) {
+                            GameOver = true;
+                        }
+                        else GameOver = false;
+
+                    switch(currentPlayer)
+                        {
+                            case 1:
+                                CurrentPlayer = Player.White;
+                                break;
+
+                            case 2:
+                                CurrentPlayer = Player.Red;
+                                break;
+
+                            default:
+                                CurrentPlayer = Player.None;
+                                break;
+                        }
+                    });
+                }
+                return _loadGame;
+            }
+        }
     }
 }
