@@ -221,11 +221,11 @@ namespace Checkers.MVVM.ViewModels
                 {
                     _loadGame = new RelayCommand(() =>
                     {
-                        string filePath = "../../JSONs/game.json";
-
+                     
                         // Read data from JSON file
-                        var (gameState,currentPlayer, cells) = Board.ReadFromJson(filePath);
-
+                        var (gameState,currentPlayer, cells) = Board.ReadFromJson();
+                        
+                        if (gameState == -1) return;
                         // Process the loaded data as needed
                         // For example, update your ViewModel properties with the loaded data
                         _squares = cells;

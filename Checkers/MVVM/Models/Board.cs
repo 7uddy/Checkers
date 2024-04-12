@@ -9,8 +9,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace Checkers.Models
 {
@@ -185,8 +189,25 @@ namespace Checkers.Models
 
         public static void SaveGame(BindableCollection<BindableCollection<Cell>> cells)
         {
+            string filePath= "../../JSONs/game.json";
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save game to a specific location?", "Save Game",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            { 
+                using (var dialog = new FolderBrowserDialog())
+                {
+                    DialogResult dialogResult = dialog.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        filePath = dialog.SelectedPath + "\\game.json";
+                    }
+                    else return;
+                }
+            }
+            else if(result==MessageBoxResult.No) filePath = "../../JSONs/game.json";
+            else if (result == MessageBoxResult.Cancel) return;
+            
             BoardViewModel.DeleteGreen();
-            string filePath = "../../JSONs/game.json";
 
             if (File.Exists(filePath))
             {
@@ -226,8 +247,30 @@ namespace Checkers.Models
         }
 
 
-        public static (int gameState,int currentPlayer, BindableCollection<BindableCollection<Cell>> cells) ReadFromJson(string filePath)
+        public static (int gameState,int currentPlayer, BindableCollection<BindableCollection<Cell>> cells) ReadFromJson()
         {
+            string filePath = "../../JSONs/game.json";
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to load game from a specific location?", "Load Game",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                
+                    Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+                    dialog.Filter = "JSON files (*.json)|*.json";
+                    dialog.DefaultExt = ".json";
+                    dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    dialog.Title = "Select a JSON file";
+                    bool? dialogResult = dialog.ShowDialog();
+                    
+                    if (dialogResult == true)
+                    {
+                        filePath = dialog.FileName;
+                    }
+                    else return (-1,-1,new BindableCollection<BindableCollection<Cell>>());
+                
+            }
+            else if (result == MessageBoxResult.No) filePath = "../../JSONs/game.json";
+            else if (result == MessageBoxResult.Cancel) return (-1, -1, new BindableCollection<BindableCollection<Cell>>());
             // Read the entire content of the file as a single string
             string jsonData = File.ReadAllText(filePath);
 
