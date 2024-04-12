@@ -3,6 +3,7 @@ using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -78,7 +79,7 @@ namespace Checkers.Models
         }
         public static bool IsEmpty(Position position, BindableCollection<BindableCollection<Cell>> cells)
         {
-           foreach (var row in cells)
+            foreach (var row in cells)
             {
                 foreach (var cell in row)
                 {
@@ -121,12 +122,12 @@ namespace Checkers.Models
                 BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
                 for (int col = 0; col < 8; col++)
                 {
-                    if ((row + col) % 2 == 1) 
-                        rowCells.Add(new Cell { CellPosition=new Position(row,col), Piece= new Piece(Player.White, false), ImagePath = "../../Resources/whitePiece.png"});
-                    else 
-                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece=null,ImagePath = "../../Resources/transparent.png" });
+                    if ((row + col) % 2 == 1)
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = new Piece(Player.White, false), ImagePath = "../../Resources/whitePiece.png" });
+                    else
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
                 }
-               cells.Add(rowCells);
+                cells.Add(rowCells);
             }
 
             //Empty cells
@@ -135,7 +136,7 @@ namespace Checkers.Models
                 BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
                 for (int col = 0; col < 8; col++)
                 {
-                    rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece=null,ImagePath = "../../Resources/transparent.png" });
+                    rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
                 }
                 cells.Add(rowCells);
             }
@@ -178,6 +179,36 @@ namespace Checkers.Models
                 }
             }
         }
-    }
 
+        public static void SaveGame(BindableCollection<BindableCollection<Cell>> cells)
+        {
+            string filePath = "../../JSONs/game.json";
+
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            List<string> jsonList = new List<string>();
+
+            foreach (var row in cells)
+            {
+                foreach (var cell in row)
+                {
+                    string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(cell);
+                    jsonList.Add(jsonData); // Write the JSON data to the file
+                }
+            }
+
+            // Serialize the list of JSON strings as a JSON array
+            string jsonArray = "[" + string.Join(",", jsonList) + "]";
+
+            // Write the JSON array to the file
+            File.WriteAllText("../../JSONs/game.json", jsonArray);
+
+        }
+    }
 }
+
+

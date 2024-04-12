@@ -195,6 +195,19 @@ namespace Checkers.MVVM.ViewModels
                 cell.ImagePath = "../../Resources/redKing.png";
             }
         }
+
+        private ICommand _saveGame;
+        public ICommand SaveGame
+        {
+            get
+            {
+                if (_saveGame == null)
+                {
+                    _saveGame = new RelayCommand(() => Board.SaveGame(_squares));
+                }
+                return _saveGame;
+            }
+        }
         
     }
 }

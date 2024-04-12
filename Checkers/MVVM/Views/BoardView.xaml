@@ -9,19 +9,27 @@
               >
     <Viewbox>
     <Grid x:Name="BoardGrid"
-          Width="800"
+          Width="900"
           Height="800">
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        </Grid.RowDefinitions>
 
-        <Grid.Background>
+            <Grid.ColumnDefinitions>
+             <ColumnDefinition Width="*"/>
+             <ColumnDefinition Width="8*"/>
+             <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+            <Grid.Background>
             <ImageBrush ImageSource="../../Resources/Board.png"
                         RenderOptions.BitmapScalingMode="HighQuality"
                         />
-        </Grid.Background>
+            </Grid.Background>
 
-            <ItemsControl ItemsSource="{Binding Squares}" Margin="25 7 0 0">
+                <ItemsControl ItemsSource="{Binding Squares}" Margin="30 7 0 30">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <ItemsControl ItemsSource="{Binding}">
@@ -30,9 +38,14 @@
                                     <StackPanel Orientation="Horizontal"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="-6.3,0,3.8,0"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Width="96" Height="95" BorderThickness="2">
+                                    <Border Width="88" Height="95" BorderThickness="0">
                                         <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ClickCommand}" CommandParameter="{Binding}" IsEnabled="True">
                                             <Button.Template>
                                                 <ControlTemplate>
@@ -48,7 +61,17 @@
                 </ItemsControl.ItemTemplate>
                 
             </ItemsControl>
-
+            </Grid>
+            
+            <Grid Grid.Column="2" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                
+                <Button Grid.Row="0" Content="Button" Height="40" VerticalAlignment="Bottom" Command="{Binding SaveGame}"/>
+            </Grid>
 
 
 
