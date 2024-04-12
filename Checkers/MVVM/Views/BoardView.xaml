@@ -69,8 +69,17 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                
                 <Button Grid.Row="0" 
+                        Content="New Game" 
+                        Height="40" 
+                        FontFamily="Arial"
+                        FontWeight="SemiBold"
+                        Background="Transparent"
+                        BorderBrush="DimGray"
+                        Foreground="White"
+                        VerticalAlignment="Bottom" 
+                        Command="{Binding NewGame}"/>
+                <Button Grid.Row="1" 
                         Content="Save Game" 
                         Height="40" 
                         FontFamily="Arial"
@@ -78,10 +87,9 @@
                         Background="Transparent"
                         BorderBrush="DimGray"
                         Foreground="White"
-                        
                         VerticalAlignment="Bottom" 
                         Command="{Binding SaveGame}"/>
-                <Button Grid.Row="1" 
+                <Button Grid.Row="2" 
                         Content="Load Game" 
                         Height="40" 
                         FontFamily="Arial"

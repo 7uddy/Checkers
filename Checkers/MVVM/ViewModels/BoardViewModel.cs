@@ -10,13 +10,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Checkers.MVVM.ViewModels
 {
-    public class BoardViewModel:ViewModelBase
+    public class BoardViewModel : ViewModelBase
     {
         public static Player CurrentPlayer { get; private set; }
 
@@ -39,8 +40,8 @@ namespace Checkers.MVVM.ViewModels
 
         public BoardViewModel()
         {
-            CurrentPlayer=Player.Red;
-            GameOver=false;
+            CurrentPlayer = Player.Red;
+            GameOver = false;
             _squares = Board.GetInitialCells();
         }
         public Cell SimpleCell { get; set; }
@@ -62,11 +63,11 @@ namespace Checkers.MVVM.ViewModels
         public void OnCellClicked(Cell clickedCell)
         {
             //New position selected
-            if(clickedCell.ImagePath== "../../Resources/Green.png")
+            if (clickedCell.ImagePath == "../../Resources/Green.png")
             {
                 MoveToNewCell(clickedCell);
 
-                if(IsCaptureMove(SimpleCell,clickedCell))
+                if (IsCaptureMove(SimpleCell, clickedCell))
                 {
                     Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
                     capturedCell.Piece = null;
@@ -104,11 +105,11 @@ namespace Checkers.MVVM.ViewModels
 
         public static void DeleteGreen()
         {
-            if (GreenCells!=null)
+            if (GreenCells != null)
             {
                 foreach (var cell in GreenCells)
                 {
-                    if(cell.Piece==null) cell.ImagePath = "../../Resources/transparent.png";
+                    if (cell.Piece == null) cell.ImagePath = "../../Resources/transparent.png";
                 }
             }
         }
@@ -169,7 +170,7 @@ namespace Checkers.MVVM.ViewModels
                 }
             }
         }
-        private bool IsCaptureMove(Cell from,Cell to)
+        private bool IsCaptureMove(Cell from, Cell to)
         {
             return Math.Abs(from.CellPosition.Row - to.CellPosition.Row) == 2;
         }
@@ -221,10 +222,10 @@ namespace Checkers.MVVM.ViewModels
                 {
                     _loadGame = new RelayCommand(() =>
                     {
-                     
+
                         // Read data from JSON file
-                        var (gameState,currentPlayer, cells) = Board.ReadFromJson();
-                        
+                        var (gameState, currentPlayer, cells) = Board.ReadFromJson();
+
                         if (gameState == -1) return;
                         // Process the loaded data as needed
                         // For example, update your ViewModel properties with the loaded data
@@ -233,12 +234,12 @@ namespace Checkers.MVVM.ViewModels
 
                         // Once the data is loaded, you can update your ViewModel properties
                         // or trigger other actions as needed
-                        if (gameState==1) {
+                        if (gameState == 1) {
                             GameOver = true;
                         }
                         else GameOver = false;
 
-                    switch(currentPlayer)
+                        switch (currentPlayer)
                         {
                             case 1:
                                 CurrentPlayer = Player.White;
@@ -255,6 +256,26 @@ namespace Checkers.MVVM.ViewModels
                     });
                 }
                 return _loadGame;
+            }
+        }
+
+        public ICommand NewGame
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    MessageBoxResult result = System.Windows.MessageBox.Show("Are you sure you want to start a new game?", "New Game",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        CurrentPlayer = Player.Red;
+                        GameOver = false;
+                        _squares = Board.GetInitialCells();
+                        Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+                    }
+                    else return;
+                });
             }
         }
     }
