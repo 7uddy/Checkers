@@ -1,7 +1,9 @@
 ﻿using Caliburn.Micro;
+using Checkers.Commands;
 using Checkers.Models;
 using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
+using Checkers.Stores;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
@@ -37,9 +39,10 @@ namespace Checkers.MVVM.ViewModels
                 }
             }
         }
-
-        public BoardViewModel()
+        public ICommand NavigateToMenu { get; }
+        public BoardViewModel(Navigation navigation, Func<MenuViewModel> createMenuViewModel)
         {
+            NavigateToMenu=new NavigateCommand(navigation, createMenuViewModel);
             CurrentPlayer = Player.Red;
             GameOver = false;
             _squares = Board.GetInitialCells();

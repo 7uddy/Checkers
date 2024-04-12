@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Checkers.MVVM.Views" 
-             xmlns:viewmodels="clr-namespace:Checkers.MVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:BoardViewModel}"
-             mc:Ignorable="d" 
-              >
+             xmlns:viewmodels="clr-namespace:Checkers.MVVM.ViewModels" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" d:DataContext="{d:DesignInstance Type=viewmodels:BoardViewModel}"
+             mc:Ignorable="d">
     <Viewbox>
     <Grid x:Name="BoardGrid"
           Width="900"
@@ -101,7 +100,19 @@
                         Command="{Binding LoadGame}"/>
             </Grid>
 
-
+            <Grid Grid.Column="0" VerticalAlignment="Top">
+                <Image Source="../../Resources/BackArrow.png" 
+                       Stretch="Uniform" 
+                       Height="50"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Margin="0 50">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding NavigateToMenu}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+            </Grid>
 
         </Grid>
     </Viewbox>

@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Checkers.MVVM.Views.MenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Checkers.MVVM.Views" xmlns:viewmodels="clr-namespace:Checkers.MVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MenuViewModel}"
+             mc:Ignorable="d"
+             Width="900"
+             Height="800">
+    <Grid VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Checkers" 
+           FontSize="80" 
+           FontFamily="SegoeUI"
+           FontWeight="Bold" 
+           HorizontalAlignment="Center"
+           Margin="0 0 0 150"
+           Grid.Row="0">
+            <TextBlock.Foreground>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#E3D26F" Offset="0.0"/>
+                    <GradientStop Color="#CA895F" Offset="1.0"/>
+                </LinearGradientBrush>
+            </TextBlock.Foreground>
+        </TextBlock>
+
+        <Button Content="Start Game" 
+                Margin="0 0 0 15"
+                FontSize="20" 
+                HorizontalAlignment="Center" 
+                Grid.Row="1"
+                Background="#70A9A1"
+                Width="250" 
+                Height="50" 
+                Command="{Binding NavigateToGame}"/>
+        <Button Content="Settings" 
+                Margin="0 0 0 15"
+                FontSize="20" 
+                HorizontalAlignment="Center" 
+                Grid.Row="2" 
+                Background="#7D84B2"
+                Width="250" 
+                Height="50" 
+                Command="{Binding NavigateToSettings}"/>
+        <Button Content="About" 
+                FontSize="20" 
+                HorizontalAlignment="Center" 
+                Grid.Row="4" 
+                Background="#9E4770"
+                Width="250" 
+                Height="50" 
+                Command="{Binding NavigateToAbout}"/>
+    </Grid>
+</UserControl>

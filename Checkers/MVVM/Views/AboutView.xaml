@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="Checkers.MVVM.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Checkers.MVVM.Views" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             Width="900"
+             Height="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0 25 0 0">
+            <TextBlock Text="About" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Top" 
+                       Foreground="#9E4770"
+                       FontWeight="Bold"
+                       FontSize="40" 
+                       Margin="0,30,0,0"/>
+            <Image Source="../../Resources/BackArrow.png" 
+                   Stretch="Uniform" 
+                   Height="50"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   HorizontalAlignment="Left"
+                   Margin="20">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding NavigateToMenu}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Image>
+        </Grid>
+        <Grid Grid.Row="1" VerticalAlignment="Center" Margin="0 150 0 0">
+            <TextBlock Text="Checkers" 
+                   FontSize="30" 
+                   FontFamily="SegoeUI"
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center"
+                   Grid.Row="0">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#E3D26F" Offset="0.0"/>
+                        <GradientStop Color="#CA895F" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+            </TextBlock>
+        </Grid>
+        <TextBlock Text="Version 1.0, 2024" 
+                   Grid.Row="3" 
+                   HorizontalAlignment="Center"  
+                   FontSize="20" 
+                   FontWeight="DemiBold"
+                   Foreground="#FBFEF9"
+                   Margin="0,20,0,0"/>
+        <TextBlock Text="Developed by Ene Calin Tudor" 
+                   Grid.Row="4"
+                   HorizontalAlignment="Center"
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   FontWeight="DemiBold"
+                   Margin="0,20,0,0"/>
+        <TextBlock Text="calin.ene@student.unitbv.ro" 
+                   Grid.Row="5"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   FontWeight="DemiBold"
+                   Margin="0,20,0,0"/>
+        <TextBlock Text="10LF222" 
+                   Grid.Row="6"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   FontWeight="DemiBold"
+                   Margin="0,20,0,0"/>
+            <TextBlock Text="Dive into the strategy of checkers! Play against friends or family in this classic game of tactics. With straightforward controls and clean design, our checkers game offers enjoyment for players of any level. Every move is crucial in this captivating test of skill!"
+                       TextWrapping="Wrap" 
+                       Grid.Row="2"
+                       Foreground="#FBFEF9"
+                       TextAlignment="Center" 
+                       HorizontalAlignment="Center" 
+                       FontSize="15" 
+                       FontWeight="DemiBold"
+                       Margin="80 20 80 0"/>
+        </Grid>
+</UserControl>

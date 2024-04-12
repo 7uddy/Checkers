@@ -204,6 +204,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="MVVM\Logic\Direction.cs" />
     <Compile Include="MVVM\Logic\GameLogic.cs" />
     <Compile Include="MVVM\Logic\Moves\Move.cs" />
@@ -212,9 +214,21 @@
     <Compile Include="MVVM\Logic\Player.cs" />
     <Compile Include="MVVM\Logic\Position.cs" />
     <Compile Include="MVVM\Models\Cell.cs" />
+    <Compile Include="MVVM\ViewModels\AboutViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\MenuViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="MVVM\Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\BoardView.xaml.cs">
       <DependentUpon>BoardView.xaml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="MVVM\Views\MenuView.xaml.cs">
+      <DependentUpon>MenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Stores\Navigation.cs" />
     <Page Include="MainWindow.xaml">
@@ -229,10 +243,22 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MVVM\Views\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\Views\BoardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="MVVM\Views\MenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +332,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSONs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\BackArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\crown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
