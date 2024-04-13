@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -75,6 +76,10 @@ namespace Checkers.MVVM.ViewModels
                     Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
                     capturedCell.Piece = null;
                     capturedCell.ImagePath = "../../Resources/transparent.png";
+                    if(SettingsViewModel.IsMultiJumpToggled)
+                    {
+                        clickedCell=Multijump(clickedCell);
+                    }
                 }
 
                 IsPromotionMove(clickedCell);
@@ -94,6 +99,55 @@ namespace Checkers.MVVM.ViewModels
                 DeleteGreen();
             }
             Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+        }
+
+        private Cell Multijump(Cell clickedCell)
+        {
+            DeleteGreen();
+            IsPromotionMove(clickedCell);
+            List<Position> positions = new List<Position>();
+
+            if (clickedCell.Piece.Color == Player.White)
+            {
+                positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthWest));
+                positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthEast));
+                if (clickedCell.Piece.IsKing == true)
+                {
+                    positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthWest));
+                    positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthEast));
+                }
+            }
+            else
+            {
+                positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthWest));
+                positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.NorthEast));
+                if (clickedCell.Piece.IsKing == true)
+                {
+                    positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthWest));
+                    positions.Add(clickedCell.Piece.GetMoves(clickedCell.CellPosition, _squares, Direction.SouthEast));
+                }
+            }
+
+            Utils.Shuffle(positions);
+
+            foreach (var pos in positions)
+            {
+                if (pos == null) continue;
+
+                if (IsCaptureMove(clickedCell, _squares[pos.Row][pos.Column]))
+                {
+                    SimpleCell = clickedCell;
+                    clickedCell = _squares[pos.Row][pos.Column];
+                    MoveToNewCell(clickedCell);
+                    Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
+                    capturedCell.Piece = null;
+                    capturedCell.ImagePath = "../../Resources/transparent.png";
+                    clickedCell=Multijump(clickedCell);
+                    break;
+                }
+            }
+            return clickedCell;
+
         }
 
         private void MoveToNewCell(Cell clickedCell)
@@ -210,7 +264,11 @@ namespace Checkers.MVVM.ViewModels
             {
                 if (_saveGame == null)
                 {
-                    _saveGame = new RelayCommand(() => Board.SaveGame(_squares));
+                    _saveGame = new RelayCommand(() => { 
+                        DeleteGreen(); 
+                        Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+                        Board.SaveGame(_squares); 
+                    });
                 }
                 return _saveGame;
             }

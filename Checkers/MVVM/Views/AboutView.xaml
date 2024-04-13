@@ -81,7 +81,8 @@
                    Foreground="#FBFEF9"
                    FontWeight="DemiBold"
                    Margin="0,20,0,0"/>
-            <TextBlock Text="Dive into the strategy of checkers! Play against friends or family in this classic game of tactics. With straightforward controls and clean design, our checkers game offers enjoyment for players of any level. Every move is crucial in this captivating test of skill!"
+            <TextBlock Text="Dive into the strategy of checkers! Play against friends or family in this classic game of tactics. With straightforward controls and clean design, checkers game offers enjoyment for players of any level.             
+                       Every move is crucial in this captivating test of skill!"
                        TextWrapping="Wrap" 
                        Grid.Row="2"
                        Foreground="#FBFEF9"
