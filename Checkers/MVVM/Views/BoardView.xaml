@@ -86,7 +86,8 @@
                         Background="Transparent"
                         BorderBrush="DimGray"
                         Foreground="White"
-                        VerticalAlignment="Bottom" 
+                        VerticalAlignment="Bottom"
+                        IsEnabled="{Binding SaveGameButton}"
                         Command="{Binding SaveGame}"/>
                 <Button Grid.Row="2" 
                         Content="Load Game" 
@@ -113,6 +114,24 @@
                     </i:Interaction.Triggers>
                 </Image>
             </Grid>
+
+            <Image Source="../../Resources/redWon.png"
+                   Stretch="Uniform"
+                   Visibility="{Binding RedWonImage}"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="1">
+            </Image>
+
+            <Image Source="../../Resources/whiteWon.png"
+                   Stretch="Uniform"
+                   Visibility="{Binding WhiteWonImage}"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Grid.Column="1">
+            </Image>
 
         </Grid>
     </Viewbox>

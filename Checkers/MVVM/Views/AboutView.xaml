@@ -3,12 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Checkers.MVVM.Views" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:local="clr-namespace:Checkers.MVVM.Views" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:viewmodels="clr-namespace:Checkers.MVVM.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:AboutViewModel}"
              mc:Ignorable="d" 
              Width="900"
              Height="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -38,7 +43,7 @@
                 </i:Interaction.Triggers>
             </Image>
         </Grid>
-        <Grid Grid.Row="1" VerticalAlignment="Center" Margin="0 150 0 0">
+        <Grid Grid.Row="1" VerticalAlignment="Center" Margin="0 70 0 0">
             <TextBlock Text="Checkers" 
                    FontSize="30" 
                    FontFamily="SegoeUI"
@@ -81,7 +86,7 @@
                    Foreground="#FBFEF9"
                    FontWeight="DemiBold"
                    Margin="0,20,0,0"/>
-            <TextBlock Text="Dive into the strategy of checkers! Play against friends or family in this classic game of tactics. With straightforward controls and clean design, checkers game offers enjoyment for players of any level.             
+        <TextBlock Text="Dive into the strategy of checkers! Play against friends or family in this classic game of tactics. With straightforward controls and clean design, checkers game offers enjoyment for players of any level.             
                        Every move is crucial in this captivating test of skill!"
                        TextWrapping="Wrap" 
                        Grid.Row="2"
@@ -91,5 +96,64 @@
                        FontSize="15" 
                        FontWeight="DemiBold"
                        Margin="80 20 80 0"/>
-        </Grid>
+        <TextBlock Text="Game Stats"
+                     Grid.Row="7"
+                     HorizontalAlignment="Center" 
+                     FontSize="25" 
+                     Foreground="#FBFEF9"
+                     FontWeight="Bold"
+                     Margin="0,30,0,0"/>
+        <TextBlock Text="Red Wins: " 
+                   Grid.Row="8"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   Margin="0,20,80,0"/>
+        <TextBlock Text="{Binding RedWins}"
+                   Grid.Row="8"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   FontWeight="DemiBold"
+                   Foreground="#FBFEF9"
+                   Margin="100,20,0,0"/>
+        <TextBlock Text="Maximum available red pieces on a win: " 
+                   Grid.Row="9"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   Margin="0,10,345,0"/>
+        <TextBlock Text="{Binding MaximumRedPieces}"
+                   Grid.Row="9"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   FontWeight="DemiBold"
+                   Foreground="#FBFEF9"
+                   Margin="100,10,0,0"/>
+        <TextBlock Text="White Wins: " 
+                   Grid.Row="10"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   Margin="0,10,100,0"/>
+        <TextBlock Text="{Binding WhiteWins}"
+                   Grid.Row="10"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   FontWeight="DemiBold"
+                   Foreground="#FBFEF9"
+                   Margin="100,10,0,0"/>
+        <TextBlock Text="Maximum available white pieces on a win: " 
+                   Grid.Row="11"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   Foreground="#FBFEF9"
+                   Margin="0,10,363,0"/>
+        <TextBlock Text="{Binding MaximumWhitePieces}"
+                   Grid.Row="11"
+                   HorizontalAlignment="Center" 
+                   FontSize="20" 
+                   FontWeight="DemiBold"
+                   Foreground="#FBFEF9"
+                   Margin="100,10,0,0"/>
+    </Grid>
 </UserControl>

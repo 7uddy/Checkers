@@ -6,10 +6,13 @@ using Checkers.MVVM.Services;
 using Checkers.Stores;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.VisualStudio.PlatformUI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,10 +46,11 @@ namespace Checkers.MVVM.ViewModels
         public ICommand NavigateToMenu { get; }
         public BoardViewModel(Navigation navigation, Func<MenuViewModel> createMenuViewModel)
         {
-            NavigateToMenu=new NavigateCommand(navigation, createMenuViewModel);
+            NavigateToMenu = new NavigateCommand(navigation, createMenuViewModel);
             CurrentPlayer = Player.Red;
             GameOver = false;
             _squares = Board.GetInitialCells();
+            ReadWins();
             CheckGame();
         }
         public Cell SimpleCell { get; set; }
@@ -77,9 +81,9 @@ namespace Checkers.MVVM.ViewModels
                     Cell capturedCell = GetCapturedCell(SimpleCell, clickedCell);
                     capturedCell.Piece = null;
                     capturedCell.ImagePath = "../../Resources/transparent.png";
-                    if(SettingsViewModel.IsMultiJumpToggled)
+                    if (SettingsViewModel.IsMultiJumpToggled)
                     {
-                        clickedCell=Multijump(clickedCell);
+                        clickedCell = Multijump(clickedCell);
                     }
                 }
 
@@ -106,7 +110,10 @@ namespace Checkers.MVVM.ViewModels
 
         private void CheckGame()
         {
+            bool noAvailableMoves = true;
             bool gameOver = true;
+            int whitePieces = 0;
+            int redPieces = 0;
             foreach (var row in _squares)
             {
                 foreach (var cell in row)
@@ -114,37 +121,158 @@ namespace Checkers.MVVM.ViewModels
                     if (cell.Piece != null && cell.Piece.Color == CurrentPlayer)
                     {
                         gameOver = false;
-                        if (cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthEast) != null ||
+
+                        if (cell.Piece.Color == Player.White && cell.Piece.IsKing == false &&
+                            (cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthEast) != null ||
+                             cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthWest) != null))
+                        {
+                            cell.ImagePath = "../../Resources/availableWhitePiece.png";
+                            noAvailableMoves = false;
+                        }
+
+                        else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == false && (
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthEast) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthWest) != null))
+                        {
+                            cell.ImagePath = "../../Resources/availableRedPiece.png";
+                            noAvailableMoves = false;
+                        }
+
+                        else if (cell.Piece.Color == Player.White && cell.Piece.IsKing == true &&
+                            (cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthEast) != null ||
                             cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthWest) != null ||
                             cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthEast) != null ||
-                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthWest) != null)
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthWest) != null))
                         {
-                            if (cell.Piece.Color == Player.White && cell.Piece.IsKing == false)
-                                cell.ImagePath = "../../Resources/availableWhitePiece.png";
-                            else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == false)
-                                cell.ImagePath = "../../Resources/availableRedPiece.png";
-                            else if (cell.Piece.Color == Player.White && cell.Piece.IsKing == true)
-                                cell.ImagePath = "../../Resources/availableWhiteKing.png";
-                            else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == true)
-                                cell.ImagePath = "../../Resources/availableRedKing.png";
+                            cell.ImagePath = "../../Resources/availableWhiteKing.png";
+                            noAvailableMoves = false;
+                        }
+
+                        else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == true &&
+                            (cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthEast) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthWest) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthEast) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthWest) != null))
+                        {
+                            cell.ImagePath = "../../Resources/availableRedKing.png";
+                            noAvailableMoves = false;
                         }
                     }
                     else if (cell.Piece != null && cell.Piece.Color != CurrentPlayer)
                     {
-                        if(cell.Piece.Color==Player.White && cell.Piece.IsKing==false)
+                        if (cell.Piece.Color == Player.White && cell.Piece.IsKing == false)
                             cell.ImagePath = "../../Resources/whitePiece.png";
-                        else if(cell.Piece.Color==Player.Red && cell.Piece.IsKing==false)
+                        else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == false)
                             cell.ImagePath = "../../Resources/redPiece.png";
-                        else if(cell.Piece.Color==Player.White && cell.Piece.IsKing==true)
+                        else if (cell.Piece.Color == Player.White && cell.Piece.IsKing == true)
                             cell.ImagePath = "../../Resources/whiteKing.png";
-                        else if(cell.Piece.Color==Player.Red && cell.Piece.IsKing==true)
+                        else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == true)
                             cell.ImagePath = "../../Resources/redKing.png";
+                    }
+                    if (cell.Piece != null && cell.Piece.Color == Player.White)
+                    {
+                        whitePieces++;
+                    }
+                    else if (cell.Piece != null && cell.Piece.Color == Player.Red)
+                    {
+                        redPieces++;
                     }
                 }
             }
-            GameOver = gameOver;
+            if (gameOver || noAvailableMoves)
+            {
+                GameOver = true;
+                if (CurrentPlayer == Player.White)
+                {
+                    AboutViewModel.RedWins++;
+                }
+                else
+                {
+                    AboutViewModel.WhiteWins++;
+                }
+                if(whitePieces> AboutViewModel.MaximumWhitePieces)
+                {
+                    AboutViewModel.MaximumWhitePieces = whitePieces;
+                }
+                if (redPieces > AboutViewModel.MaximumRedPieces)
+                {
+                    AboutViewModel.MaximumRedPieces = redPieces;
+                }
+                WriteWins();
+                OnPropertyChanged(nameof(GameOver));
+                OnPropertyChanged(nameof(RedWonImage));
+                OnPropertyChanged(nameof(WhiteWonImage));
+                OnPropertyChanged(nameof(SaveGameButton));
+            }
+        }
+        private void WriteWins()
+        {
+            string filePath = "../../JSONs/stats.json";
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            int[] integers = { AboutViewModel.WhiteWins, AboutViewModel.MaximumWhitePieces, 
+                AboutViewModel.RedWins, AboutViewModel.MaximumRedPieces };
+            try
+            {
+                // Serialize the integers array to JSON format
+                string jsonText = JsonConvert.SerializeObject(integers);
+
+                // Write the JSON text to the file
+                File.WriteAllText(filePath, jsonText);
+
+                Console.WriteLine("Successfully wrote 4 integers to the JSON file.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
 
+        public static void ReadWins()
+        {
+            string filePath = "../../JSONs/stats.json";
+            if (!File.Exists(filePath))
+            {
+                AboutViewModel.WhiteWins = 0;
+                AboutViewModel.MaximumWhitePieces = 0;
+                AboutViewModel.RedWins = 0;
+                AboutViewModel.MaximumRedPieces = 0;
+                return;
+            }
+            string jsonText = File.ReadAllText(filePath);
+            try
+            {
+                // Deserialize the JSON text into an array of integers
+                int[] integers = JsonConvert.DeserializeObject<int[]>(jsonText);
+
+                // Check if there are exactly 4 integers
+                if (integers.Length == 4)
+                {
+                    // Print the integers
+                    Console.WriteLine("The 4 integers read from the JSON file are:");
+                    AboutViewModel.WhiteWins= integers[0];
+                    AboutViewModel.MaximumWhitePieces = integers[1];
+                    AboutViewModel.RedWins = integers[2];
+                    AboutViewModel.MaximumRedPieces = integers[3];
+                }
+                else
+                {
+                    Console.WriteLine("The JSON file does not contain exactly 4 integers.");
+                }
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine("Error deserializing JSON.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+        }
+        
+    
         private Cell Multijump(Cell clickedCell)
         {
             DeleteGreen();
@@ -358,6 +486,11 @@ namespace Checkers.MVVM.ViewModels
                                 CurrentPlayer = Player.None;
                                 break;
                         }
+                        CheckGame();
+                        OnPropertyChanged(nameof(GameOver));
+                        OnPropertyChanged(nameof(RedWonImage));
+                        OnPropertyChanged(nameof(WhiteWonImage));
+                        OnPropertyChanged(nameof(SaveGameButton));
                     });
                 }
                 return _loadGame;
@@ -377,11 +510,46 @@ namespace Checkers.MVVM.ViewModels
                         CurrentPlayer = Player.Red;
                         GameOver = false;
                         _squares = Board.GetInitialCells();
+                        CheckGame();
                         Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+                        OnPropertyChanged(nameof(GameOver));
+                        OnPropertyChanged(nameof(RedWonImage));
+                        OnPropertyChanged(nameof(WhiteWonImage));
+                        OnPropertyChanged(nameof(SaveGameButton));
                     }
                     else return;
                 });
             }
         }
+
+        public System.Windows.Visibility RedWonImage
+        {
+            get
+            {
+                if(GameOver && CurrentPlayer==Player.White)
+                {
+                    return System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    return System.Windows.Visibility.Hidden;
+                }
+            }
+        }
+        public System.Windows.Visibility WhiteWonImage
+        {
+            get
+            {
+                if(GameOver && CurrentPlayer==Player.Red)
+                {
+                    return System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    return System.Windows.Visibility.Hidden;
+                }
+            }
+        }
+        public bool SaveGameButton { get {  return !GameOver; } }
     }
 }
