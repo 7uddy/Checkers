@@ -13,6 +13,8 @@ namespace Checkers.MVVM.ViewModels
         public static int MaximumWhitePieces { get; set; }
         public static int RedWins { get; set; }
         public static int MaximumRedPieces { get; set; }
+
+        private static readonly string filePath = "../../JSONs/stats.json";
         public ICommand NavigateToMenu { get; }
         public AboutViewModel(Navigation navigation, Func<MenuViewModel> createMenuViewModel)
         {
@@ -21,7 +23,6 @@ namespace Checkers.MVVM.ViewModels
         }
         public static void ReadWins()
         {
-            string filePath = "../../JSONs/stats.json";
             if (!File.Exists(filePath))
             {
                 WhiteWins = 0;
