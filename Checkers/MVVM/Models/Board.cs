@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using Microsoft.VisualStudio.PlatformUI;
 
 namespace Checkers.Models
 {
@@ -92,7 +93,8 @@ namespace Checkers.Models
                 {
                     if (cell.CellPosition == position)
                     {
-                        return cell.ImagePath == "../../Resources/transparent.png";
+                        return cell.ImagePath == "../../Resources/transparent.png" || 
+                            cell.ImagePath== "../../Resources/Green.png";
                     }
                 }
             }
@@ -258,7 +260,8 @@ namespace Checkers.Models
                     Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
                     dialog.Filter = "JSON files (*.json)|*.json";
                     dialog.DefaultExt = ".json";
-                    dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    string relativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JSONs");
+                    dialog.InitialDirectory = relativePath;
                     dialog.Title = "Select a JSON file";
                     bool? dialogResult = dialog.ShowDialog();
                     

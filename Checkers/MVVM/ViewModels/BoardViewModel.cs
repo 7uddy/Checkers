@@ -47,6 +47,7 @@ namespace Checkers.MVVM.ViewModels
             CurrentPlayer = Player.Red;
             GameOver = false;
             _squares = Board.GetInitialCells();
+            CheckGame();
         }
         public Cell SimpleCell { get; set; }
         static private List<Cell> GreenCells { get; set; }
@@ -98,7 +99,50 @@ namespace Checkers.MVVM.ViewModels
             {
                 DeleteGreen();
             }
+            CheckGame();
             Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
+
+        }
+
+        private void CheckGame()
+        {
+            bool gameOver = true;
+            foreach (var row in _squares)
+            {
+                foreach (var cell in row)
+                {
+                    if (cell.Piece != null && cell.Piece.Color == CurrentPlayer)
+                    {
+                        gameOver = false;
+                        if (cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthEast) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.NorthWest) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthEast) != null ||
+                            cell.Piece.GetMoves(cell.CellPosition, _squares, Direction.SouthWest) != null)
+                        {
+                            if (cell.Piece.Color == Player.White && cell.Piece.IsKing == false)
+                                cell.ImagePath = "../../Resources/availableWhitePiece.png";
+                            else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == false)
+                                cell.ImagePath = "../../Resources/availableRedPiece.png";
+                            else if (cell.Piece.Color == Player.White && cell.Piece.IsKing == true)
+                                cell.ImagePath = "../../Resources/availableWhiteKing.png";
+                            else if (cell.Piece.Color == Player.Red && cell.Piece.IsKing == true)
+                                cell.ImagePath = "../../Resources/availableRedKing.png";
+                        }
+                    }
+                    else if (cell.Piece != null && cell.Piece.Color != CurrentPlayer)
+                    {
+                        if(cell.Piece.Color==Player.White && cell.Piece.IsKing==false)
+                            cell.ImagePath = "../../Resources/whitePiece.png";
+                        else if(cell.Piece.Color==Player.Red && cell.Piece.IsKing==false)
+                            cell.ImagePath = "../../Resources/redPiece.png";
+                        else if(cell.Piece.Color==Player.White && cell.Piece.IsKing==true)
+                            cell.ImagePath = "../../Resources/whiteKing.png";
+                        else if(cell.Piece.Color==Player.Red && cell.Piece.IsKing==true)
+                            cell.ImagePath = "../../Resources/redKing.png";
+                    }
+                }
+            }
+            GameOver = gameOver;
         }
 
         private Cell Multijump(Cell clickedCell)

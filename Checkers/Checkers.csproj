@@ -207,7 +207,6 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="MVVM\Logic\Direction.cs" />
-    <Compile Include="MVVM\Logic\GameLogic.cs" />
     <Compile Include="MVVM\Logic\Moves\Move.cs" />
     <Compile Include="MVVM\Logic\Moves\NormalMove.cs" />
     <Compile Include="MVVM\Logic\MoveType.cs" />
@@ -339,6 +338,26 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\crown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\availableWhiteKing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\availableRedKing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\availableRedPiece.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\availableWhitePiece.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
