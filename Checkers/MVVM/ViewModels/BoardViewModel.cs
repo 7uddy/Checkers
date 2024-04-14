@@ -5,21 +5,15 @@ using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
 using Checkers.Stores;
 using GalaSoft.MvvmLight.Command;
-using Microsoft.VisualStudio.PlatformUI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Checkers.MVVM.ViewModels
 {
@@ -29,7 +23,7 @@ namespace Checkers.MVVM.ViewModels
 
         public static bool GameOver { get; private set; }
 
-        private BindableCollection<BindableCollection<Cell>> _squares;
+        private static BindableCollection<BindableCollection<Cell>> _squares;
 
         public BindableCollection<BindableCollection<Cell>> Squares
         {
@@ -49,12 +43,58 @@ namespace Checkers.MVVM.ViewModels
             NavigateToMenu = new NavigateCommand(navigation, createMenuViewModel);
             CurrentPlayer = Player.Red;
             GameOver = false;
-            _squares = Board.GetInitialCells();
-            ReadWins();
+            _squares = GetInitialCells();
+            AboutViewModel.ReadWins();
+            SettingsViewModel.ReadSettings();
             CheckGame();
         }
-        public Cell SimpleCell { get; set; }
-        static private List<Cell> GreenCells { get; set; }
+        private BindableCollection<BindableCollection<Cell>> GetInitialCells()
+        {
+            BindableCollection<BindableCollection<Cell>> cells = new BindableCollection<BindableCollection<Cell>>();
+
+            //White pieces
+            for (int row = 0; row < 3; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    if ((row + col) % 2 == 1)
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = new Piece(Player.White, false), ImagePath = "../../Resources/whitePiece.png" });
+                    else
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
+                }
+                cells.Add(rowCells);
+            }
+
+            //Empty cells
+            for (int row = 3; row < 5; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
+                }
+                cells.Add(rowCells);
+            }
+
+            //Red pieces
+            for (int row = 5; row < 8; row++)
+            {
+                BindableCollection<Cell> rowCells = new BindableCollection<Cell>();
+                for (int col = 0; col < 8; col++)
+                {
+                    if ((row + col) % 2 == 1)
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = new Piece(Player.Red, false), ImagePath = "../../Resources/redPiece.png" });
+                    else
+                        rowCells.Add(new Cell { CellPosition = new Position(row, col), Piece = null, ImagePath = "../../Resources/transparent.png" });
+                }
+                cells.Add(rowCells);
+            }
+
+            return cells;
+        }
+        private Cell SimpleCell { get; set; }
+        private List<Cell> GreenCells { get; set; }
 
         private ICommand _clickCommand;
         public ICommand ClickCommand
@@ -69,7 +109,7 @@ namespace Checkers.MVVM.ViewModels
             }
         }
 
-        public void OnCellClicked(Cell clickedCell)
+        private void OnCellClicked(Cell clickedCell)
         {
             //New position selected
             if (clickedCell.ImagePath == "../../Resources/Green.png")
@@ -216,63 +256,15 @@ namespace Checkers.MVVM.ViewModels
                 AboutViewModel.RedWins, AboutViewModel.MaximumRedPieces };
             try
             {
-                // Serialize the integers array to JSON format
                 string jsonText = JsonConvert.SerializeObject(integers);
 
-                // Write the JSON text to the file
                 File.WriteAllText(filePath, jsonText);
-
-                Console.WriteLine("Successfully wrote 4 integers to the JSON file.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
         }
-
-        public static void ReadWins()
-        {
-            string filePath = "../../JSONs/stats.json";
-            if (!File.Exists(filePath))
-            {
-                AboutViewModel.WhiteWins = 0;
-                AboutViewModel.MaximumWhitePieces = 0;
-                AboutViewModel.RedWins = 0;
-                AboutViewModel.MaximumRedPieces = 0;
-                return;
-            }
-            string jsonText = File.ReadAllText(filePath);
-            try
-            {
-                // Deserialize the JSON text into an array of integers
-                int[] integers = JsonConvert.DeserializeObject<int[]>(jsonText);
-
-                // Check if there are exactly 4 integers
-                if (integers.Length == 4)
-                {
-                    // Print the integers
-                    Console.WriteLine("The 4 integers read from the JSON file are:");
-                    AboutViewModel.WhiteWins= integers[0];
-                    AboutViewModel.MaximumWhitePieces = integers[1];
-                    AboutViewModel.RedWins = integers[2];
-                    AboutViewModel.MaximumRedPieces = integers[3];
-                }
-                else
-                {
-                    Console.WriteLine("The JSON file does not contain exactly 4 integers.");
-                }
-            }
-            catch (JsonException)
-            {
-                Console.WriteLine("Error deserializing JSON.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
-            }
-        }
-        
-    
         private Cell Multijump(Cell clickedCell)
         {
             DeleteGreen();
@@ -332,7 +324,7 @@ namespace Checkers.MVVM.ViewModels
 
         }
 
-        public static void DeleteGreen()
+        private void DeleteGreen()
         {
             if (GreenCells != null)
             {
@@ -342,7 +334,7 @@ namespace Checkers.MVVM.ViewModels
                 }
             }
         }
-        void SetAcceptedMoves(Cell clickedCell)
+        private void SetAcceptedMoves(Cell clickedCell)
         {
             if (clickedCell.Piece.IsKing == false)
             {
@@ -430,7 +422,7 @@ namespace Checkers.MVVM.ViewModels
         }
 
         private ICommand _saveGame;
-        public ICommand SaveGame
+        public ICommand SaveGameCommand
         {
             get
             {
@@ -439,7 +431,7 @@ namespace Checkers.MVVM.ViewModels
                     _saveGame = new RelayCommand(() => { 
                         DeleteGreen(); 
                         Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
-                        Board.SaveGame(_squares); 
+                        SaveGame(); 
                     });
                 }
                 return _saveGame;
@@ -455,18 +447,13 @@ namespace Checkers.MVVM.ViewModels
                 {
                     _loadGame = new RelayCommand(() =>
                     {
-
-                        // Read data from JSON file
-                        var (gameState, currentPlayer, cells) = Board.ReadFromJson();
+                        var (gameState, currentPlayer, cells) = ReadFromJson();
 
                         if (gameState == -1) return;
-                        // Process the loaded data as needed
-                        // For example, update your ViewModel properties with the loaded data
+
                         _squares = cells;
                         Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
 
-                        // Once the data is loaded, you can update your ViewModel properties
-                        // or trigger other actions as needed
                         if (gameState == 1) {
                             GameOver = true;
                         }
@@ -503,13 +490,13 @@ namespace Checkers.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    MessageBoxResult result = System.Windows.MessageBox.Show("Are you sure you want to start a new game?", "New Game",
-                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    MessageBoxResult result = System.Windows.MessageBox.Show("Are you sure you want to start a new game?", 
+                        "New Game",MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
                         CurrentPlayer = Player.Red;
                         GameOver = false;
-                        _squares = Board.GetInitialCells();
+                        _squares = GetInitialCells();
                         CheckGame();
                         Squares = new BindableCollection<BindableCollection<Cell>>(_squares);
                         OnPropertyChanged(nameof(GameOver));
@@ -550,6 +537,145 @@ namespace Checkers.MVVM.ViewModels
                 }
             }
         }
-        public bool SaveGameButton { get {  return !GameOver; } }
+        public bool SaveGameButton { 
+            get {  return !GameOver; } 
+        }
+        public static bool IsInsideBoard(Position position)
+        {
+            return position.Row >= 0 && position.Row < 8 && position.Column >= 0 && position.Column < 8;
+        }
+        public static bool IsEmpty(Position position)
+        {
+            foreach (var row in _squares)
+            {
+                foreach (var cell in row)
+                {
+                    if (cell.CellPosition == position)
+                    {
+                        return cell.ImagePath == "../../Resources/transparent.png" ||
+                            cell.ImagePath == "../../Resources/Green.png";
+                    }
+                }
+            }
+            return false;
+        }
+
+        private string filePath = "../../JSONs/game.json";
+        private void SaveGame()
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save game to a specific location?", "Save Game",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                using (var dialog = new FolderBrowserDialog())
+                {
+                    DialogResult dialogResult = dialog.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        filePath = dialog.SelectedPath + "\\game.json";
+                    }
+                    else return;
+                }
+            }
+            else if (result == MessageBoxResult.No) filePath = "../../JSONs/game.json";
+            else if (result == MessageBoxResult.Cancel) return;
+
+            DeleteGreen();
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            List<string> jsonList = new List<string>();
+
+            string gameOverJson;
+
+            if (GameOver == true)
+            {
+                gameOverJson = JsonConvert.SerializeObject(1);
+            }
+            else gameOverJson = JsonConvert.SerializeObject(0);
+
+            string currentPlayerJson = JsonConvert.SerializeObject(CurrentPlayer);
+            jsonList.Add(gameOverJson);
+            jsonList.Add(currentPlayerJson);
+
+            foreach (var row in _squares)
+            {
+                foreach (var cell in row)
+                {
+                    string jsonData = JsonConvert.SerializeObject(cell);
+                    jsonList.Add(jsonData);
+                }
+            }
+
+            string jsonArray = "[" + string.Join(",", jsonList) + "]";
+
+            File.WriteAllText(filePath, jsonArray);
+        }
+        private (int gameState, int currentPlayer, BindableCollection<BindableCollection<Cell>> cells) ReadFromJson()
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to load game from a specific location?", "Load Game",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+
+                Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+                dialog.Filter = "JSON files (*.json)|*.json";
+                dialog.DefaultExt = ".json";
+                string relativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JSONs");
+                dialog.InitialDirectory = relativePath;
+                dialog.Title = "Select a JSON file";
+                bool? dialogResult = dialog.ShowDialog();
+
+                if (dialogResult == true)
+                {
+                    filePath = dialog.FileName;
+                }
+                else return (-1, -1, new BindableCollection<BindableCollection<Cell>>());
+
+            }
+            else if (result == MessageBoxResult.No) filePath = "../../JSONs/game.json";
+            else if (result == MessageBoxResult.Cancel) return (-1, -1, new BindableCollection<BindableCollection<Cell>>());
+
+            string jsonData = File.ReadAllText(filePath);
+
+
+            JArray jsonArray = JArray.Parse(jsonData);
+
+
+            int gameState = jsonArray[0].ToObject<int>();
+            int currentPlayer = jsonArray[1].ToObject<int>();
+
+
+            JArray cellArray = new JArray(jsonArray.Skip(2));
+            BindableCollection<BindableCollection<Cell>> cells = new BindableCollection<BindableCollection<Cell>>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                cells.Add(new BindableCollection<Cell>());
+            }
+
+            foreach (JToken cellToken in cellArray)
+            {
+                Position cellPosition = cellToken["CellPosition"].ToObject<Position>();
+
+                Piece piece = cellToken["Piece"]?.ToObject<Piece>();
+
+                string imagePath = (string)cellToken["ImagePath"];
+
+                Cell cell = new Cell
+                {
+                    CellPosition = cellPosition,
+                    Piece = piece,
+                    ImagePath = imagePath
+                };
+
+                cells[cellPosition.Row].Add(cell);
+            }
+
+            return (gameState, currentPlayer, cells);
+        }
     }
 }

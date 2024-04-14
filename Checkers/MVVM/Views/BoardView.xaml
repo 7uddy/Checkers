@@ -88,7 +88,7 @@
                         Foreground="White"
                         VerticalAlignment="Bottom"
                         IsEnabled="{Binding SaveGameButton}"
-                        Command="{Binding SaveGame}"/>
+                        Command="{Binding SaveGameCommand}"/>
                 <Button Grid.Row="2" 
                         Content="Load Game" 
                         Height="40" 

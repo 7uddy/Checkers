@@ -207,9 +207,6 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\NavigateCommand.cs" />
     <Compile Include="MVVM\Logic\Direction.cs" />
-    <Compile Include="MVVM\Logic\Moves\Move.cs" />
-    <Compile Include="MVVM\Logic\Moves\NormalMove.cs" />
-    <Compile Include="MVVM\Logic\MoveType.cs" />
     <Compile Include="MVVM\Logic\Player.cs" />
     <Compile Include="MVVM\Logic\Position.cs" />
     <Compile Include="MVVM\Models\Cell.cs" />
@@ -263,7 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MVVM\Models\Piece.cs" />
-    <Compile Include="MVVM\Models\Board.cs" />
     <Compile Include="MVVM\ViewModels\MainViewModel.cs" />
     <Compile Include="MVVM\ViewModels\BoardViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />

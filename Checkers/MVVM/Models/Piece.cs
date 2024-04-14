@@ -1,9 +1,7 @@
 ﻿using Caliburn.Micro;
-using Checkers.MVVM.Logic;
 using Checkers.MVVM.Models;
 using Checkers.MVVM.Services;
-using System.Collections;
-using System.Collections.Generic;
+using Checkers.MVVM.ViewModels;
 
 namespace Checkers.Models
 {
@@ -26,33 +24,26 @@ namespace Checkers.Models
             _color = color;
             _isKing = isKing;
         }
-        public Piece Copy()
-        {
-            Piece piece = new Piece(_color,_isKing);
-            return piece;
-        }
-
         public Position GetMoves(Position from, BindableCollection<BindableCollection<Cell>> cells, Direction dir)
         {
 
             Position pos = dir.NewPosition(from);
 
-            if (Board.IsEmpty(pos, cells))
+            if (BoardViewModel.IsEmpty(pos))
             {
                 return pos;
             }
             else
             {
-                if (Board.IsInsideBoard(pos) && Board.GetPiece(pos, cells).Color != _color)
+                if (BoardViewModel.IsInsideBoard(pos) && pos.GetPiece(cells).Color != _color)
                 {
                     pos = dir.NewPosition(pos);
-                    if (Board.IsEmpty(pos, cells))
+                    if (BoardViewModel.IsEmpty(pos))
                     {
                         return pos;
                     }
                 }
             }
-
             return null;
         }
     }

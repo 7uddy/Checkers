@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Windows.Input;
-using System.Xaml;
 
 namespace Checkers.MVVM.ViewModels
 {
@@ -56,7 +55,7 @@ namespace Checkers.MVVM.ViewModels
             }
         }
 
-        private void ReadSettings() 
+        public static void ReadSettings() 
         {
             if (!File.Exists(_settingsPath))
             {
@@ -67,7 +66,6 @@ namespace Checkers.MVVM.ViewModels
             {
                 int multiJump = int.Parse(jsonText);
                 IsMultiJumpToggled = multiJump == 1;
-                OnPropertyChanged(nameof(IsMultiJumpToggled));
             }
             catch (JsonException)
             {

@@ -1,10 +1,8 @@
 ﻿using Checkers.Commands;
 using Checkers.Stores;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Input;
 
 namespace Checkers.MVVM.ViewModels
@@ -19,7 +17,40 @@ namespace Checkers.MVVM.ViewModels
         public AboutViewModel(Navigation navigation, Func<MenuViewModel> createMenuViewModel)
         {
             NavigateToMenu = new NavigateCommand(navigation, createMenuViewModel);
-            BoardViewModel.ReadWins();
+            ReadWins();
+        }
+        public static void ReadWins()
+        {
+            string filePath = "../../JSONs/stats.json";
+            if (!File.Exists(filePath))
+            {
+                WhiteWins = 0;
+                MaximumWhitePieces = 0;
+                RedWins = 0;
+                MaximumRedPieces = 0;
+                return;
+            }
+            string jsonText = File.ReadAllText(filePath);
+            try
+            {
+                int[] integers = JsonConvert.DeserializeObject<int[]>(jsonText);
+
+                if (integers.Length == 4)
+                {
+                    WhiteWins = integers[0];
+                    MaximumWhitePieces = integers[1];
+                    RedWins = integers[2];
+                    MaximumRedPieces = integers[3];
+                }
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine("Error deserializing JSON.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
     }
 }

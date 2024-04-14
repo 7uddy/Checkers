@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Caliburn.Micro;
+using Checkers.Models;
+using Checkers.MVVM.Models;
+using System.Collections.Generic;
 
 namespace Checkers.MVVM.Services
 {
@@ -53,6 +56,20 @@ namespace Checkers.MVVM.Services
         public static Position operator +(Position pos,Direction dir)
         {
             return new Position(pos.Row + dir.RowDelta, pos.Column + dir.ColumnDelta);
+        }
+        public Piece GetPiece(BindableCollection<BindableCollection<Cell>> Squares)
+        {
+            foreach (var row in Squares)
+            {
+                foreach (var cell in row)
+                {
+                    if (cell.CellPosition == this)
+                    {
+                        return cell.Piece;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

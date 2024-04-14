@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Checkers
 {
     public static class Utils
     {
-        private static Random rng = new Random();
+        private static readonly Random rng = new Random();
 
         public static void Shuffle<T>(this IList<T> list)
         {
