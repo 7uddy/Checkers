@@ -624,7 +624,9 @@ namespace Checkers.MVVM.ViewModels
                 Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
                 dialog.Filter = "JSON files (*.json)|*.json";
                 dialog.DefaultExt = ".json";
-                string relativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JSONs");
+                string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string parentDirectory = Directory.GetParent(currentDirectory)?.Parent?.Parent?.FullName;
+                string relativePath = Path.Combine(parentDirectory, "JSONs");
                 dialog.InitialDirectory = relativePath;
                 dialog.Title = "Select a JSON file";
                 bool? dialogResult = dialog.ShowDialog();
